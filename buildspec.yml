@@ -14,3 +14,4 @@ artifacts:
   files: 
     - publish/**/*
     - scripts/**/*
+    - AppSpec.yml
