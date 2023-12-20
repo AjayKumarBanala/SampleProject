@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - dotnet restore NetCoreHealthCheckSample.csproj
+  build:
+    commands:
+      - dotnet build -c Release NetCoreHealthCheckSample.csproj
+  post_build:
+    commands:
+      - dotnet publish -c Release -o ./publish NetCoreHealthCheckSample.csproj
+artifacts:
+  files: 
+    - publish/**/*
+    - scripts/**/*
