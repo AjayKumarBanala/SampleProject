@@ -1,6 +1,6 @@
 version: 0.0
 os: windows
 files:
-  - source: \build_output\CoreApplicationForAWS
-    destination: C:\Websites\CoreApplication
+  - source: \publish
+    destination: C:\SampleProject
     overwrite: merge
