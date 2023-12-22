@@ -3,15 +3,29 @@ version: 0.2
 phases:
   install:
     commands:
+      - git diff --name-only master..Version1 > changed_files.txt || true
       - dotnet restore NetCoreHealthCheckSample.csproj
   build:
     commands:
       - dotnet build -c Release NetCoreHealthCheckSample.csproj
   post_build:
     commands:
-      - dotnet publish -c Release -o ./publish NetCoreHealthCheckSample.csproj
+      - |
+        if [ -s changed_files.txt ]; then
+          echo "Building artifact with only modified files."
+          mkdir -p publish
+          while IFS= read -r file; do
+            cp --parents "$file" publish/
+          done < changed_files.txt
+          echo "Publishing artifact..."
+        else
+          echo "No changes found. Skipping artifact creation."
+          exit 0
+        fi
 artifacts:
-  files: 
+  files:
     - publish/**/*
     - scripts/**/*
     - AppSpec.yml
+    - changed_files.txt
+
