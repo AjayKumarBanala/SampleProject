@@ -15,13 +15,14 @@ phases:
           echo "Building artifact with only modified files."
           mkdir -p ./publish_diff
           xargs -a changed_files.txt -I {} cp --parents {} ./publish_diff/ < /dev/null
-          # Include the changed files in the artifacts
-          artifacts:
-            files:
-              - publish_diff/**/*
-              - scripts/**/*
-              - AppSpec.yml
-              - changed_files.txt
+          echo "Publishing artifact..."
         else
           echo "No changes found. Skipping artifact creation."
-      fi
+          exit 0
+        fi
+artifacts:
+  files:
+    - publish_diff/**/*
+    - scripts/**/*
+    - AppSpec.yml
+    - changed_files.txt
