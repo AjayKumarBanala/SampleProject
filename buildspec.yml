@@ -15,14 +15,14 @@ phases:
           echo "Building artifact with only modified files."
           mkdir -p publish
           cat changed_files.txt | xargs -I {} cp --parents {} publish/
-          echo "Publishing artifact..."
+          echo "Publishing artifact to CodeDeploy directory..."
+          mv publish $CODEDEPLOY/deployment-archive
         else
           echo "No changes found. Skipping artifact creation."
           exit 0
         fi
 artifacts:
   files:
-    - publish/**/*
     - scripts/**/*
     - AppSpec.yml
     - changed_files.txt
