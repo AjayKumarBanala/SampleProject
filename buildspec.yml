@@ -14,9 +14,7 @@ phases:
         if [ -s changed_files.txt ]; then
           echo "Building artifact with only modified files."
           mkdir -p publish
-          while IFS= read -r file; do
-            cp --parents "$file" publish/
-          done < changed_files.txt
+          cat changed_files.txt | xargs -I {} cp --parents {} publish/
           echo "Publishing artifact..."
         else
           echo "No changes found. Skipping artifact creation."
@@ -28,4 +26,3 @@ artifacts:
     - scripts/**/*
     - AppSpec.yml
     - changed_files.txt
-
