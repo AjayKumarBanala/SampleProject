@@ -1,6 +1,6 @@
 version: 0.0
 os: windows
 files:
-  - source: \publish_diff
+  - source: \publish
     destination: C:\SampleProject
     overwrite: merge
