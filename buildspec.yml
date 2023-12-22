@@ -13,8 +13,8 @@ phases:
       - |
         if [ -s changed_files.txt ]; then
           echo "Building artifact with only modified files."
-          mkdir -p ./publish_diff
-          xargs -a changed_files.txt -I {} cp --parents {} ./publish_diff/ < /dev/null
+          mkdir -p ./publish
+          xargs -a changed_files.txt -I {} cp --parents {} ./publish/ < /dev/null
           echo "Publishing artifact..."
         else
           echo "No changes found. Skipping artifact creation."
@@ -22,7 +22,7 @@ phases:
         fi
 artifacts:
   files:
-    - publish_diff/**/*
+    - publish/**/*
     - scripts/**/*
     - AppSpec.yml
     - changed_files.txt
