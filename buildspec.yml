@@ -9,9 +9,12 @@ phases:
       - dotnet build -c Release NetCoreHealthCheckSample.csproj
   post_build:
     commands:
-      - dotnet publish -c Release -o ./publish NetCoreHealthCheckSample.csproj
+      - git diff --name-only version1...master > changed_files.txt
+      # - dotnet publish -c Release -o ./publish NetCoreHealthCheckSample.csproj
+      - mkdir -p deployment
+      - xargs -I{} cp --parents {} deployment/ < changed_files.txt || true
 artifacts:
   files: 
-    - publish/**/*
+    - deployment/**/*
     - scripts/**/*
     - AppSpec.yml
