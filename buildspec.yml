@@ -3,16 +3,24 @@ version: 0.2
 phases:
   install:
     commands:
+      - git fetch --all
       - dotnet restore NetCoreHealthCheckSample.csproj
+
   build:
     commands:
       - dotnet build -c Release NetCoreHealthCheckSample.csproj
+
   post_build:
     commands:
-      - git diff --name-only version1...master > changed_files.txt
-      # - dotnet publish -c Release -o ./publish NetCoreHealthCheckSample.csproj
+      # Identify modified files using Git between version1 and master branches
+      - git diff --name-only origin/version1...origin/master > changed_files.txt
+
+      # Create a deployment directory
       - mkdir -p deployment
+
+      # Copy only modified files to the deployment directory
       - xargs -I{} cp --parents {} deployment/ < changed_files.txt || true
+
 artifacts:
   files: 
     - deployment/**/*
