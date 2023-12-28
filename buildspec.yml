@@ -7,11 +7,17 @@ phases:
   build:
     commands:
       - dotnet build -c Release NetCoreHealthCheckSample.csproj
+      - mkdir -p ./build-output/controllers
+      - mkdir -p ./build-output/extensions/HealthChecks
+      - cp -R ./NetCoreHealthCheckSample/controllers/bin/Release/netcoreapp*/publish/* ./build-output/controllers/
+      - cp -R ./NetCoreHealthCheckSample/extensions/HealthChecks/bin/Release/netcoreapp*/publish/* ./build-output/extensions/HealthChecks/
   post_build:
     commands:
-      - dotnet publish -c Release -o ./publish NetCoreHealthCheckSample.csproj
+      - dotnet publish -c Release -o ./publish/controllers NetCoreHealthCheckSample/controllers/controllers.csproj
+      - dotnet publish -c Release -o ./publish/extensions/HealthChecks NetCoreHealthCheckSample/extensions/HealthChecks/HealthChecks.csproj
 artifacts:
-  files: 
-    - publish/**/*
+  files:
+    - publish/controllers/**/*
+    - publish/extensions/HealthChecks/**/*
     - scripts/**/*
     - AppSpec.yml
