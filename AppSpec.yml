@@ -3,4 +3,4 @@ os: windows
 files:
   - source: \publish
     destination: C:\SampleProject
-    overwrite: merge
+    file_exists_behavior: RETAIN
