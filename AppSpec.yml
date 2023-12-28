@@ -1,6 +1,7 @@
 version: 0.0
 os: windows
 files:
-  - source: \publish
+  - source: \publish\controllers
     destination: C:\SampleProject
     file_exists_behavior: RETAIN
+
