@@ -4,3 +4,9 @@ files:
   - source: \publish
     destination: C:\SampleProject
     overwrite: merge
+
+hooks:
+  AfterInstall:
+    - location: publish\CompareAndCopyfiles.ps1
+      runas: Administrator
+      timeout: 300
