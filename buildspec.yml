@@ -18,4 +18,4 @@ artifacts:
     - AppSpec.yml
 secondary-artifacts:
     artifact2:
-      files: 'Controllers/**/*'
+      files: 'SampleProject/Controllers/**/*'
