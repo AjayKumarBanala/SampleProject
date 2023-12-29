@@ -7,6 +7,6 @@ files:
 
 hooks:
   AfterInstall:
-    - location: publish\CompareAndCopyfiles.ps1
+    - location: \CompareAndCopyfiles.ps1
       runas: Administrator
       timeout: 300
