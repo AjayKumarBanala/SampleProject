@@ -1,7 +1,6 @@
 version: 0.0
 os: windows
 files:
-  - source: \publish\controllers
+  - source: \publish
     destination: C:\SampleProject
-    file_exists_behavior: RETAIN
-
+    overwrite: merge
