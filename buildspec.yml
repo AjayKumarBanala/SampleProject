@@ -14,4 +14,5 @@ artifacts:
   files: 
     - publish/**/*
     - scripts/**/*
+    - CompareAndCopyfiles.ps1
     - AppSpec.yml
