@@ -3,21 +3,20 @@ version: 0.2
 phases:
   install:
     commands:
-      - dotnet restore NetCoreHealthCheckSample.csproj
+      - dotnet restore
   build:
     commands:
-      - dotnet build -c Release NetCoreHealthCheckSample.csproj
-      - mkdir -p ./build-output/controllers
-      - mkdir -p ./build-output/extensions/HealthChecks
-      - cp -R ./NetCoreHealthCheckSample/controllers/bin/Release/netcoreapp*/publish/* ./build-output/controllers/
-      - cp -R ./NetCoreHealthCheckSample/extensions/HealthChecks/bin/Release/netcoreapp*/publish/* ./build-output/extensions/HealthChecks/
-  post_build:
-    commands:
+      - dotnet build -c Release
       - dotnet publish -c Release -o ./publish/controllers NetCoreHealthCheckSample/controllers/controllers.csproj
       - dotnet publish -c Release -o ./publish/extensions/HealthChecks NetCoreHealthCheckSample/extensions/HealthChecks/HealthChecks.csproj
+  post_build:
+    commands:
+      - mkdir -p ./build-output/controllers
+      - mkdir -p ./build-output/extensions/HealthChecks
+      - cp -R ./publish/controllers/* ./build-output/controllers/
+      - cp -R ./publish/extensions/HealthChecks/* ./build-output/extensions/HealthChecks/
 artifacts:
   files:
-    - publish/controllers/**/*
-    - publish/extensions/HealthChecks/**/*
+    - build-output/**
     - scripts/**/*
     - AppSpec.yml
