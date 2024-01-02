@@ -16,6 +16,3 @@ artifacts:
     - scripts/**/*
     - CompareAndCopyfiles.ps1
     - AppSpec.yml
-secondary-artifacts:
-    artifact2:
-      files: 'SampleProject/Controllers/**/*'
