@@ -4,8 +4,6 @@ files:
   - source: \publish
     destination: C:\SampleProject
     overwrite: merge
-  - source: files\Controllers
-    destination: C:\SampleProject
 
 hooks:
   AfterInstall:
