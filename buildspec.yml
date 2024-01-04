@@ -16,4 +16,4 @@ artifacts:
     - scripts/**/*
     - CompareAndCopyfiles.ps1
     - AppSpec.yml
-  discard-paths: 'AdventureTest/*'
+  discard-paths: AdventureTest/*
