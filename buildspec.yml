@@ -17,5 +17,5 @@ artifacts:
     - CompareAndCopyfiles.ps1
     - AppSpec.yml
 exclude-paths:
-    - '/appsettings.json'
+    - '**/appsettings.json'
 
