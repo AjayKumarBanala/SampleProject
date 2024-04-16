@@ -12,6 +12,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Print current working directory
+      run: |
+        echo "Current working directory:"
+        pwd
+    - name: List contents of the workspace directory
+      run: |
+        echo "Contents of the workspace directory:"
+        ls -R ${{ github.workspace }}
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -27,4 +35,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: build-artifact
-        path: ./path/to/build/output
+        path: ${{ github.workspace }}/bin
