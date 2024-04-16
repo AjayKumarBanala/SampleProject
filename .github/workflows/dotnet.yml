@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Print current working directory
@@ -42,4 +42,4 @@ jobs:
       run: |
         echo "$SSH_KEY" > key.pem
         chmod 600 key.pem
-        scp -i key.pem -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* Administrator@<13.37.239.151>:C:\Git
+        scp -i key.pem -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* Administrator@13.37.239.151:/C/Git
