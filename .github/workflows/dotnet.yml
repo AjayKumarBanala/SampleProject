@@ -40,6 +40,4 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.SSH_KEY2 }}
       run: |
-        echo "$PRIVATE_KEY" > $HOME/.ssh/id_rsa
-        chmod 600 $HOME/.ssh/id_rsa
         scp -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* admin.ajay@13.37.239.151:/c/Users/Admin.Ajay/package
