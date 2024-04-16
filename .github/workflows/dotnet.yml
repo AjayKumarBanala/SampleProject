@@ -37,7 +37,5 @@ jobs:
         path: ${{ github.workspace }}/bin
         
     - name: Copy artifact to EC2 instance
-      env:
-        PRIVATE_KEY: ${{ secrets.SSH_KEY2 }}
       run: |
-        scp -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* admin.ajay@13.37.239.151:/c/Users/Admin.Ajay/package
+        scp -i "/c/Users/Admin.Ajay/.ssh/id_rsa" -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* admin.ajay@13.37.239.151:/c/Users/Admin.Ajay/package
