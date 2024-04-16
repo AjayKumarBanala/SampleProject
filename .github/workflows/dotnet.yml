@@ -38,8 +38,8 @@ jobs:
         
     - name: Copy artifact to EC2 instance
       env:
-        PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+        PRIVATE_KEY: ${{ secrets.SSH_KEY2 }}
       run: |
-        echo "$SSH_KEY" > key.pem
+        echo "$SSH_KEY2" > key.pem
         chmod 600 key.pem
-        scp -i key.pem -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* Administrator@13.37.239.151:/C/Git
+        scp -i key.pem -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* admin.ajay@13.37.239.151:/c/Users/Admin.Ajay/package
