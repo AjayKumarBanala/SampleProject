@@ -42,9 +42,9 @@ jobs:
         SERVER_USERNAME: ${{ secrets.WINRM_USERNAME }}
         SERVER_PASSWORD: ${{ secrets.WINRM_PASSWORD }}
       run: |
-        $password = ConvertTo-SecureString -String $env:WINRM_PASSWORD -AsPlainText -Force
-        $cred = New-Object System.Management.Automation.PSCredential ($env:WINRM_USERNAME, $password)
-        Invoke-Command -ComputerName $env:WINRM_HOST -Credential $cred -ScriptBlock {
+        $password = ConvertTo-SecureString -String $env:SERVER_PASSWORD -AsPlainText -Force
+        $cred = New-Object System.Management.Automation.PSCredential ($env:SERVER_USERNAME, $password)
+        Invoke-Command -ComputerName $env:SERVER_HOST -Credential $cred -ScriptBlock {
           param($source, $destination)
           Copy-Item -Path $source -Destination $destination -Recurse
         } -ArgumentList "${{ github.workspace }}/bin/*", "C:\SampleProject"
