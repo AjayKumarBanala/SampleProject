@@ -10,7 +10,7 @@ jobs:
   build:
 
     runs-on: self-hosted
-    container: ubuntu-latest
+    container: windows-latest
 
     steps:
     - name: Print current working directory
@@ -42,8 +42,8 @@ jobs:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        $sshKeyPath = $env:USERPROFILE + "\.ssh\id_rsa"
+        $sshKeyPath = $env:HOME + "/.ssh/id_rsa"
         $source = "${{ github.workspace }}/bin/*"
-        $destination = "C:\Users\Ajay.Banala\.ssh\test"
+        $destination = "/path/on/windows/server"
         ssh -i $sshKeyPath admin.ajay@$env:SERVER_HOST "mkdir -p $destination"
         scp -i $sshKeyPath -r $source admin.ajay@$env:SERVER_HOST:$destination
