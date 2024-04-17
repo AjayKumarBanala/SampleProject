@@ -36,12 +36,15 @@ jobs:
       with:
         name: build-artifact
         path: ${{ github.workspace }}/bin
-    - name: Upload artifact to EC2 Windows instance
-      uses: shawntabrizi/ssh-command-action@v2
-      with:
-        host: ${{ secrets.WINRM_HOST }}
-        username: ${{ secrets.WINRM_USERNAME }}
-        password: ${{ secrets.WINRM_PASSWORD }}
-        port: ${{ secrets.WINRM_PORT }}
-        script: |
-          scp -r "${{ github.workspace }}/bin/*" "${{ secrets.WINRM_USERNAME }}"@"${{ secrets.WINRM_HOST }}":C:/SampleProject
+    - name: Upload artifact to Windows Server
+      env:
+        SERVER_HOST: ${{ secrets.WINRM_HOST }}
+        SERVER_USERNAME: ${{ secrets.WINRM_USERNAME }}
+        SERVER_PASSWORD: ${{ secrets.WINRM_PASSWORD }}
+      run: |
+        $password = ConvertTo-SecureString -String $env:WINRM_PASSWORD -AsPlainText -Force
+        $cred = New-Object System.Management.Automation.PSCredential ($env:WINRM_USERNAME, $password)
+        Invoke-Command -ComputerName $env:WINRM_HOST -Credential $cred -ScriptBlock {
+          param($source, $destination)
+          Copy-Item -Path $source -Destination $destination -Recurse
+        } -ArgumentList "${{ github.workspace }}/bin/*", "C:\SampleProject"
