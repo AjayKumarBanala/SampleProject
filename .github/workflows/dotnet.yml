@@ -36,3 +36,12 @@ jobs:
       with:
         name: build-artifact
         path: ${{ github.workspace }}/bin
+    - name: Upload artifact to EC2 Windows instance
+      uses: ansible/winrm-action@v2
+      with:
+        script: |
+          $securePassword = ConvertTo-SecureString "${{ secrets.WINRM_PASSWORD }}" -AsPlainText -Force
+          $credential = New-Object System.Management.Automation.PSCredential ('${{ secrets.WINRM_USERNAME }}', $securePassword)
+          $sessionOption = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
+          $session = New-PSSession -ConnectionUri "http://${{ secrets.WINRM_HOST }}:${{ secrets.WINRM_PORT }}/wsman" -Credential $credential -SessionOption $sessionOption
+          Copy-Item -Path "${{ github.workspace }}/bin/*" -Destination "C:\SampleProject" -ToSession $session
