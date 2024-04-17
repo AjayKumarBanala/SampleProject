@@ -36,6 +36,16 @@ jobs:
         name: build-artifact
         path: ${{ github.workspace }}/bin
         
-    - name: Copy artifact to EC2 instance
-      run: |
-        scp -i "/c/Users/Admin.Ajay/.ssh/id_rsa" -o StrictHostKeyChecking=no -r ${{ github.workspace }}/bin/* admin.ajay@13.37.239.151:/c/Users/Admin.Ajay/package
+    - name: Copy artifact to Windows server
+      uses: appleboy/windows-ssh-action@master
+      with:
+        host: ${{ secrets.WINRM_HOST }}
+        username: ${{ secrets.WINRM_USERNAME }}
+        password: ${{ secrets.WINRM_PASSWORD }}
+        port: ${{ secrets.WINRM_PORT }}
+        script: |
+          Invoke-Command -ScriptBlock {
+            param($source, $destination)
+            New-Item -ItemType Directory -Force -Path $destination
+            Copy-Item -Path $source -Destination $destination -Recurse
+          } -ArgumentList "${{ github.workspace }}/bin", "C:\SampleProject"
