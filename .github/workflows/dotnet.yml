@@ -45,7 +45,7 @@ jobs:
         $sshKeyPath = "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
         $source = "C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
         $destination = "C:\\Packagefile"  # Use forward slashes for Windows paths
-        echo "SCP Command: scp -i $sshKeyPath -r $source Ajay.Banala@${{ secrets.SERVER_HOST }}:$destination"
+        echo "SCP Command: scp -i $sshKeyPath -r $source Ajay.Banala@ARROW2K19.procentrisin.com:$destination"
     - name: Upload artifact to Windows Server
       env:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
@@ -57,5 +57,5 @@ jobs:
         echo "SSH Key Path: $sshKeyPath"
         echo "Source: $source"
         echo "Destination: $destination"
-        scp -i $sshKeyPath -r $source Ajay.Banala@${{ secrets.SERVER_HOST }}:$destination
+        scp -i $sshKeyPath -r $source Ajay.Banala@ARROW2K19.procentrisin.com:$destination
         echo "Script execution completed"
