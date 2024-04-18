@@ -45,9 +45,9 @@ jobs:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        $sshKeyPath = "C:\Users\Ajay.Banala\.sshid_rsa"
-        $source = "${{ github.workspace }}/bin/*"
-        $destination = "C:/Packagefile"  # Use forward slashes for Windows paths
+        $sshKeyPath = "C:\Users\Ajay.Banala\.ssh\id_rsa"
+        $source = "C:\actions-runner\_work\SampleProject\SampleProject\bin\*"
+        $destination = "C:\Packagefile"  # Use forward slashes for Windows paths
         echo "SSH Key Path: $sshKeyPath"
         echo "Source: $source"
         echo "Destination: $destination"
