@@ -5,8 +5,3 @@ files:
     destination: C:\SampleProject
     overwrite: merge
 
-hooks:
-  AfterInstall:
-    - location: \CompareAndCopyfiles.ps1
-      runas: Administrator
-      timeout: 300
