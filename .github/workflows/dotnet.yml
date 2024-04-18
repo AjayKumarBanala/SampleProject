@@ -1,42 +1,43 @@
-name: .NET
+name: CI-CD Workflow
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Archive artifacts
-      uses: actions/upload-artifact@v3
+
+    - name: Build and Test
+      run: dotnet build && dotnet test
+
+    - name: Publish
+      run: dotnet publish -c Release -o ./publish
+
+    - name: zip publish
+      run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip
+
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        name: build-artifact
-        path: ${{ github.workspace }}/bin
-    - name: Upload artifact to Windows Server
-      env:
-        SERVER_HOST: ${{ secrets.SERVER_HOST }}
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: {aws-region}
+
+    - name: Upload to S3
+      run: | 
+        aws s3 cp ./publish s3://{bucket-name}/{folder-name}/ --recursive
+
+    - name: Deploy to EC2 instance
       run: |
-        echo "Uploading files to Windows Server..."
-        $sshKeyPath = "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
-        $source = "C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
-        $destination = "C:\\Packagefile"
-        echo "SSH Key Path: $sshKeyPath"
-        echo "Source: $source"
-        echo "Destination: $destination"
-        echo "put -r $source $destination" | sftp -i $sshKeyPath Ajay.Banala@172.16.0.102
-        echo "Upload completed."
+        aws deploy create-deployment --application-name {application-name} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name {deployment-group-name} --s3-location bucket={bucket-name},key={folder-name}/publish.zip,bundleType=zip
