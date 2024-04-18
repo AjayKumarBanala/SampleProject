@@ -51,5 +51,4 @@ jobs:
         echo "SSH Key Path: $sshKeyPath"
         echo "Source: $source"
         echo "Destination: $destination"
-        ssh -i $sshKeyPath Ajay.Banala@${{ secrets.SERVER_HOST }} "mkdir -p $destination"
         scp -i $sshKeyPath -r $source Ajay.Banala@${{ secrets.SERVER_HOST }}:$destination
