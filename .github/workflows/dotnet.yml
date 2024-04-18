@@ -36,13 +36,20 @@ jobs:
       with:
         name: build-artifact
         path: ${{ github.workspace }}/bin
+    - name: Debug SSH Key Path
+      run: |
+        echo "HOME environment variable: $HOME"
+        echo "SSH Key Path: $HOME/.ssh/id_rsa"
     - name: Upload artifact to Windows Server
       env:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        $sshKeyPath = $env:HOME + "/.ssh/id_rsa"
+        $sshKeyPath = $HOME + "/.ssh/id_rsa"
         $source = "${{ github.workspace }}/bin/*"
-        $destination = "C:\Packagefile"
+        $destination = "C:/Packagefile"  # Use forward slashes for Windows paths
+        echo "SSH Key Path: $sshKeyPath"
+        echo "Source: $source"
+        echo "Destination: $destination"
         ssh -i $sshKeyPath Ajay.Banala@$env:SERVER_HOST "mkdir -p $destination"
         scp -i $sshKeyPath -r $source admin.ajay@$env:SERVER_HOST:$destination
