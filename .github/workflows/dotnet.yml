@@ -26,36 +26,17 @@ jobs:
       with:
         name: build-artifact
         path: ${{ github.workspace }}/bin
-    - name: Debug SSH Key Path
-      run: |
-        echo "SSH Key Path: C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
-    - name: Debug Source Path
-      run: |
-        echo "Source Path: C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
-    - name: Debug Destination Path
-      run: |
-        echo "Destination Path: C:\\Packagefile"
-    - name: Debug Server Connection
-      run: |
-        echo "Testing server connection to Ajay.Banala"
-        ssh -i "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa" Ajay.Banala@${{ secrets.SERVER_HOST }} "echo Connected successfully"
-    - name: Debug SCP Command
-      run: |
-        echo "Executing SCP Command"
-        $sshKeyPath = "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
-        $source = "C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
-        $destination = "C:\\Packagefile"  # Use forward slashes for Windows paths
-        echo "SCP Command: scp -i $sshKeyPath -r $source Ajay.Banala@172.16.0.102:$destination"
     - name: Upload artifact to Windows Server
       env:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
+        echo "Uploading files to Windows Server..."
         $sshKeyPath = "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
         $source = "C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
-        $destination = "C:\\Packagefile"  # Use forward slashes for Windows paths
+        $destination = "C:\\Packagefile"
         echo "SSH Key Path: $sshKeyPath"
         echo "Source: $source"
         echo "Destination: $destination"
-        scp -i $sshKeyPath -r $source Ajay.Banala@172.16.0.102:$destination
-        echo "Script execution completed"
+        echo "put -r $source $destination" | sftp -i $sshKeyPath Ajay.Banala@172.16.0.102
+        echo "Upload completed."
