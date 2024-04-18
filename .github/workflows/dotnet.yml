@@ -8,18 +8,8 @@ on:
 
 jobs:
   build:
-
     runs-on: self-hosted
-
     steps:
-    - name: Print current working directory
-      run: |
-        echo "Current working directory:"
-        pwd
-    - name: List contents of the workspace directory
-      run: |
-        echo "Contents of the workspace directory:"
-        ls -R ${{ github.workspace }}
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -38,8 +28,24 @@ jobs:
         path: ${{ github.workspace }}/bin
     - name: Debug SSH Key Path
       run: |
-        echo "HOME environment variable: $HOME"
-        echo "SSH Key Path: $HOME/.ssh/id_rsa"
+        echo "SSH Key Path: C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
+    - name: Debug Source Path
+      run: |
+        echo "Source Path: C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
+    - name: Debug Destination Path
+      run: |
+        echo "Destination Path: C:\\Packagefile"
+    - name: Debug Server Connection
+      run: |
+        echo "Testing server connection to Ajay.Banala"
+        ssh -i "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa" Ajay.Banala@${{ secrets.SERVER_HOST }} "echo Connected successfully"
+    - name: Debug SCP Command
+      run: |
+        echo "Executing SCP Command"
+        $sshKeyPath = "C:\\Users\\Ajay.Banala\\.ssh\\id_rsa"
+        $source = "C:\\actions-runner\\_work\\SampleProject\\SampleProject\\bin\\*"
+        $destination = "C:\\Packagefile"  # Use forward slashes for Windows paths
+        echo "SCP Command: scp -i $sshKeyPath -r $source Ajay.Banala@${{ secrets.SERVER_HOST }}:$destination"
     - name: Upload artifact to Windows Server
       env:
         SERVER_HOST: ${{ secrets.SERVER_HOST }}
@@ -52,3 +58,4 @@ jobs:
         echo "Source: $source"
         echo "Destination: $destination"
         scp -i $sshKeyPath -r $source Ajay.Banala@${{ secrets.SERVER_HOST }}:$destination
+        echo "Script execution completed"
