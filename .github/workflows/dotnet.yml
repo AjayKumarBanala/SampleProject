@@ -32,12 +32,12 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: {aws-region}
+        aws-region: eu-west-3
 
     - name: Upload to S3
       run: | 
-        aws s3 cp ./publish s3://{bucket-name}/{folder-name}/ --recursive
+        aws s3 cp ./publish/publish.zip s3://codepipeline-eu-west-3-480651260932/SampleTestProject/publish.zip
 
     - name: Deploy to EC2 instance
       run: |
-        aws deploy create-deployment --application-name {application-name} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name {deployment-group-name} --s3-location bucket={bucket-name},key={folder-name}/publish.zip,bundleType=zip
+        aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/publish.zip,bundleType=zip
