@@ -44,5 +44,5 @@ jobs:
         $sshKeyPath = $env:HOME + "/.ssh/id_rsa"
         $source = "${{ github.workspace }}/bin/*"
         $destination = "/c/Users/Ajay.Banala/.ssh/test"
-        ssh -i $sshKeyPath admin.ajay@$env:SERVER_HOST "mkdir -p $destination"
+        ssh -i $sshKeyPath Ajay.Banala@$env:SERVER_HOST "mkdir -p $destination"
         scp -i $sshKeyPath -r $source admin.ajay@$env:SERVER_HOST:$destination
