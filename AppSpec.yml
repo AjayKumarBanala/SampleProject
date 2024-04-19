@@ -1,7 +1,7 @@
 version: 0.0
 os: windows
 files:
-  - source: s3://codepipeline-eu-west-3-480651260932/SampleTestProject/
+  - source: /
     destination: C:\SampleProject
     overwrite: true
 
