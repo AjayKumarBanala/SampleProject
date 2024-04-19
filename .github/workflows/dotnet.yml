@@ -26,7 +26,7 @@ jobs:
       run: dotnet publish -c Release -o ./publish
 
     - name: zip publish
-      run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip
+      run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish
 
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
@@ -37,7 +37,7 @@ jobs:
 
     - name: Upload to S3
       run: | 
-        aws s3 cp ./publish/publish.zip s3://codepipeline-eu-west-3-480651260932/SampleTestProject/publish.zip
+        aws s3 cp ./publish/publish s3://codepipeline-eu-west-3-480651260932/SampleTestProject/publish
 
     - name: Deploy to EC2 instance
       run: |
