@@ -24,13 +24,8 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o ./publish
       
-    - name: Copy .yml files to publish directory
-      run: |
-        Get-ChildItem -Path . -Recurse -Filter "*.yml" | ForEach-Object { Copy-Item -Path $_.FullName -Destination ./publish/ }
-
-        
     - name: zip publish
-      run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip
+      run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip -Force
 
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
