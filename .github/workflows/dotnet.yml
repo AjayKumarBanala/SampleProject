@@ -39,6 +39,8 @@ jobs:
     - name: Upload to S3
       run: | 
         aws s3 cp ./publish/ s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/ --recursive
+        aws s3 cp AppSpec.yml s3://codepipeline-eu-west-3-480651260932/SampleTestProject/AppSpec.yml
+        aws s3 cp AppSpec.yml s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/AppSpec.yml
 
     - name: Deploy to EC2 instance
       run: |
