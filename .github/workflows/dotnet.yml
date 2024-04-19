@@ -26,7 +26,8 @@ jobs:
       
     - name: Copy .yml files to publish directory
       run: |
-        find . -type f -name "*.yml" -exec cp {} ./publish/ \;
+        Get-ChildItem -Path . -Recurse -Filter "*.yml" | ForEach-Object { Copy-Item -Path $_.FullName -Destination ./publish/ }
+
         
     - name: zip publish
       run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip
