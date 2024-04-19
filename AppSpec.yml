@@ -1,7 +1,7 @@
 version: 0.0
 os: windows
 files:
-  - source: \publish
+  - source: .\publish\zip
     destination: C:\SampleProject
     overwrite: merge
 
