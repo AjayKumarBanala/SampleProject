@@ -29,11 +29,11 @@ jobs:
       run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip
 
     - name: Configure AWS credentials from Test account
-      run: |
-        echo "[default]" >> $HOME/.aws/credentials
-        echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $HOME/.aws/credentials
-        echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $HOME/.aws/credentials
-        echo "region=eu-west-3" >> $HOME/.aws/config
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-3
 
     - name: Upload to S3
       run: | 
