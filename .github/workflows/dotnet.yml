@@ -24,8 +24,15 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o ./publish
       
-    - name: zip publish
-      run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip -Force
+    - name: Copy .yml files to publish directory
+      run: |
+        find . -type f -name "*.yml" -exec cp {} ./publish/ \;
+        
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: ./publish
 
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
@@ -36,8 +43,9 @@ jobs:
 
     - name: Upload to S3
       run: | 
-        aws s3 cp ./publish/publish.zip s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/publish.zip
+        aws s3 cp ./publish s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/ --recursive
+        echo "Files uploaded to S3 bucket"
 
     - name: Deploy to EC2 instance
       run: |
-        aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/TestApp/publish.zip,bundleType=zip
+        aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/TestApp/my-artifact.zip,bundleType=zip
