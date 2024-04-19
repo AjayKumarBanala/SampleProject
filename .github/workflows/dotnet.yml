@@ -41,4 +41,4 @@ jobs:
 
     - name: Deploy to EC2 instance
       run: |
-        aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/publish.zip,bundleType=zip
+        aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject,bundleType=zip
