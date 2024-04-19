@@ -3,5 +3,5 @@ os: windows
 files:
   - source: .\publish\zip
     destination: C:\SampleProject
-    overwrite: merge
+    overwrite: true
 
