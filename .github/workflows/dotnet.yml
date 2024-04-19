@@ -23,11 +23,7 @@ jobs:
 
     - name: Publish
       run: dotnet publish -c Release -o ./publish
-      
-    - name: Copy .yml files to publish directory
-      run: |
-        find . -type f -name "*.yml" -exec cp {} ./publish/ \;
-        
+            
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
