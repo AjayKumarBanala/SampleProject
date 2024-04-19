@@ -35,7 +35,7 @@ jobs:
 
     - name: Upload to S3
       run: | 
-        aws s3 cp ./publish s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/
+        aws s3 cp ${{ github.workspace }}/publish s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/
 
     - name: Deploy to EC2 instance
       run: |
