@@ -23,7 +23,11 @@ jobs:
 
     - name: Publish
       run: dotnet publish -c Release -o ./publish
-
+      
+    - name: Copy .yml files to publish directory
+      run: |
+        cp **/*.yml ./publish/
+        
     - name: zip publish
       run: Compress-Archive -Path ./publish -DestinationPath ./publish/publish.zip
 
