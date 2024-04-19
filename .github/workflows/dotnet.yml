@@ -31,7 +31,6 @@ jobs:
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        appspec: AppSpec.yml
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-3
@@ -41,5 +40,9 @@ jobs:
         aws s3 cp ./publish/publish.zip s3://codepipeline-eu-west-3-480651260932/SampleTestProject/publish.zip
 
     - name: Deploy to EC2 instance
-      run: |
-        aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/publish.zip,bundleType=zip
+      uses: aws-actions/aws-codedeploy@v2
+      with:
+        application-name: AWS_DevOps_Try
+        deployment-group: AWS_DevOps_Try_Group
+        region: eu-west-3
+        s3-location: bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/publish.zip,bundleType=zip
