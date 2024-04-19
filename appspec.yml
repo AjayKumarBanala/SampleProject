@@ -1,6 +1,0 @@
-version: 0.0
-os: windows
-files:
-  - source: .\publish.zip
-    destination: C:\SampleProject
-    overwrite: true
