@@ -24,6 +24,10 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o ./publish
 
+    - name: Copy AppSpec.yml to publish folder
+      run: |
+        Copy-Item -Path ./AppSpec.yml -Destination ./publish/AppSpec.yml
+
     - name: Compress artifacts
       run: |
         Compress-Archive -Path ./publish -DestinationPath ./publish.zip
