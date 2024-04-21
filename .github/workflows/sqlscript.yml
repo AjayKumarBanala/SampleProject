@@ -43,6 +43,11 @@ jobs:
         run: |
           Compress-Archive -Path ./FinalScript -DestinationPath ./deployment.zip
 
+      - name: Upload to S3
+        run: | 
+          aws s3 cp ./deployment.zip s3://codepipeline-eu-west-3-480651260932/SampleTestProject/TestApp/deployment.zip
+          echo "Files uploaded to S3 bucket"
+
       - name: Deploy to EC2 instance using AWS CodeDeploy
         run: |
           aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/TestApp/deployment.zip,bundleType=zip
