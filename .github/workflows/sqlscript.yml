@@ -37,7 +37,7 @@ jobs:
         run: |
           Copy-Item -Path ./psupdatescript.ps1 -Destination ./deployment-scripts/psupdatescript.ps1
           Copy-Item -Path ./updatescript.sql -Destination ./deployment-scripts/updatescript.sql
-          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./deployment-scripts/AppSpec.yml
+          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./deployment-scripts/AppSpec.yml -Force
 
       - name: Archive deployment scripts
         run: |
