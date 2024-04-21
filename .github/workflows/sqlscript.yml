@@ -1,0 +1,42 @@
+name: SQL Scripts
+
+jobs:
+  copy-scripts:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy PowerShell script
+        run: |
+          Copy-Item -Path ./SampleProject/ps1scripts/psupdatescript.ps1 -Destination ./psupdatescript.ps1
+
+      - name: Copy SQL script
+        run: |
+          Copy-Item -Path ./SampleProject/AdventureTest/SQLUpdateScripts/updatescript.sql -Destination ./updatescript.sql
+
+      - name: Copy AppSpec file
+        run: |
+          Copy-Item -Path ./SampleProject/AppSpec-SQL.yml -Destination ./AppSpec-SQL.yml
+
+      - name: Configure AWS credentials for CodeDeploy
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-3
+
+      - name: Copy scripts to deployment directory
+        run: |
+          Copy-Item -Path ./psupdatescript.ps1 -Destination ./deployment-scripts/psupdatescript.ps1
+          Copy-Item -Path ./updatescript.sql -Destination ./deployment-scripts/updatescript.sql
+          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./deployment-scripts/AppSpec.yml
+
+      - name: Archive deployment scripts
+        run: |
+          Compress-Archive -Path ./deployment-scripts -DestinationPath ./deployment.zip
+
+      - name: Deploy to EC2 instance using AWS CodeDeploy
+        run: |
+          aws deploy create-deployment --application-name AWS_DevOps_Try --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name AWS_DevOps_Try_Group --s3-location bucket=codepipeline-eu-west-3-480651260932,key=SampleTestProject/TestApp/deployment.zip,bundleType=zip
