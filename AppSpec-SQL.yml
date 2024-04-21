@@ -7,6 +7,6 @@ files:
 
 hooks:
   AfterInstall:
-    - location: C:\SQLScripts\FromGitHub\psupdatescript.ps1
+    - location: psupdatescript.ps1
       runas: Administrator
-      args: -ExecutionPolicy Bypass -File C:\\SQLScripts\\FromGitHub\\psupdatescript.ps1
+      args: -ExecutionPolicy Bypass -File C:\SQLScripts\FromGitHub\psupdatescript.ps1
