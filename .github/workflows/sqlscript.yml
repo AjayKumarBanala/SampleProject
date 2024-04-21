@@ -24,7 +24,7 @@ jobs:
 
       - name: Copy AppSpec file
         run: |
-          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./AppSpec-SQL.yml
+          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./AppSpec.yml
 
       - name: Configure AWS credentials for CodeDeploy
         uses: aws-actions/configure-aws-credentials@v1
@@ -37,7 +37,7 @@ jobs:
         run: |
           Copy-Item -Path ./psupdatescript.ps1 -Destination ./deployment-scripts/psupdatescript.ps1
           Copy-Item -Path ./updatescript.sql -Destination ./deployment-scripts/updatescript.sql
-          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./deployment-scripts/AppSpec.yml -Force
+          Copy-Item -Path ./AppSpec.yml -Destination ./deployment-scripts/AppSpec.yml -Force
 
       - name: Archive deployment scripts
         run: |
