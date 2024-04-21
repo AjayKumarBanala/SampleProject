@@ -4,8 +4,8 @@ files:
   - source: /
     destination: C:\SQLScripts\FromGitHub
     overwrite: true
-
 hooks:
   AfterInstall:
-    - location: C:\SQLScripts\FromGitHub\psupdatescript.ps1
-
+    - location: powershell.exe
+      runas: Administrator
+      args: -ExecutionPolicy Bypass -File C:\\SQLScripts\\FromGitHub\\psupdatescript.ps1
