@@ -14,15 +14,15 @@ jobs:
 
       - name: Copy PowerShell script
         run: |
-          Copy-Item -Path ./SampleProject/ps1scripts/psupdatescript.ps1 -Destination ./psupdatescript.ps1
+          Copy-Item -Path ./ps1scripts/psupdatescript.ps1 -Destination ./psupdatescript.ps1
 
       - name: Copy SQL script
         run: |
-          Copy-Item -Path ./SampleProject/AdventureTest/SQLUpdateScripts/updatescript.sql -Destination ./updatescript.sql
+          Copy-Item -Path ./AdventureTest/SQLUpdateScripts/updatescript.sql -Destination ./updatescript.sql
 
       - name: Copy AppSpec file
         run: |
-          Copy-Item -Path ./SampleProject/AppSpec-SQL.yml -Destination ./AppSpec-SQL.yml
+          Copy-Item -Path ./AppSpec-SQL.yml -Destination ./AppSpec-SQL.yml
 
       - name: Configure AWS credentials for CodeDeploy
         uses: aws-actions/configure-aws-credentials@v1
