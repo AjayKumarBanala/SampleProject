@@ -1,5 +1,9 @@
 name: SQL Scripts
 
+on:
+  workflow_dispatch:
+
+
 jobs:
   copy-scripts:
     runs-on: windows-latest
