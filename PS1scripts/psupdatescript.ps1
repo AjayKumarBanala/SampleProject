@@ -7,7 +7,7 @@ $username = "Devops"
 $password = "Devops"
 
 # Path to your SQL script file
-$sqlScriptPath = "C:\SQLScripts\updatescript.sql"
+$sqlScriptPath = "C:\SQLScripts\FromGitHub\updatescript.sql"
 
 # Connection string with SQL Server authentication
 $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
