@@ -53,35 +53,42 @@ jobs:
         mkdir -p ./results_sarif
         mkdir -p ./results_csv
 
-    # -------------------- Collect SARIF files dynamically --------------------
-    - name: Collect SARIF files
+    - name: Process SARIF Files
       run: |
-        SARIF_FILES=$(find "$GITHUB_WORKSPACE" -type f -name "${{ matrix.language }}*.sarif")
-        if [ -z "$SARIF_FILES" ]; then
-          echo "No SARIF files found for ${{ matrix.language }}"
+        mkdir -p ./results
+        # Dynamically find SARIF files under the _work folder
+        SARIF_FILE=$(find "$RUNNER_WORKSPACE" -type f -name "${{ matrix.language }}*.sarif" | head -n 1)
+        if [[ -f "$SARIF_FILE" ]]; then
+          cp "$SARIF_FILE" ./results/
+          echo "Copied $(basename $SARIF_FILE) to ./results/"
         else
-          echo "$SARIF_FILES" | xargs -I {} cp {} ./results_sarif/
-          echo "Copied SARIF files to ./results_sarif/"
+          echo "No SARIF file found for ${{ matrix.language }}, skipping."
         fi
+      env:
+        RUNNER_WORKSPACE: ${{ github.workspace }}
 
-    # -------------------- Upload SARIF artifacts --------------------
+
+
+
     - name: Upload SARIF artifacts
       uses: actions/upload-artifact@v4
       with:
         name: sarif-files-${{ matrix.language }}
-        path: ./results_sarif/
+        path: ./results/
+
 
     # -------------------- Convert SARIF to CSV --------------------
     - name: Convert SARIF to CSV
       uses: mr-sherman/sarif-to-csv@v2.1
       with:
         # Dynamically process SARIF files for this language
-        input-file: "./results_sarif/${{ matrix.language }}*.sarif"
-        output-file: "./results_csv/${{ matrix.language }}.csv"
+        input-file: "./results/${{ matrix.language }}*.sarif"
+        output-file: "./results/${{ matrix.language }}.csv"
 
     # -------------------- Upload CSV artifacts --------------------
     - name: Upload CSV artifacts
       uses: actions/upload-artifact@v4
       with:
         name: csv-files-${{ matrix.language }}
-        path: ./results_csv/${{ matrix.language }}.csv
+        path: ./results/${{ matrix.language }}.csv
+
