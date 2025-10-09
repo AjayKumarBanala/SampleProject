@@ -24,7 +24,7 @@ jobs:
             build-mode: none
 
     steps:
-    # 1️⃣ Checkout the repository
+    # 1️⃣ Checkout repo
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -34,31 +34,36 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # Optional: add custom queries
-        # queries: security-extended,security-and-quality
 
-    # 3️⃣ Only needed if build-mode is manual
+    # 3️⃣ Build if manual (optional)
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
         echo "Manual build mode set. Please build your code here."
         exit 1
 
-    # 4️⃣ Perform CodeQL Analysis
+    # 4️⃣ Perform CodeQL analysis (uploads to Security tab automatically)
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{ matrix.language }}"
-        # This will automatically upload SARIF to GitHub Security tab
 
-    # 5️⃣ Copy SARIF files to results folder
-    - name: Copy SARIF files to results folder
+    # 5️⃣ Find all SARIF files anywhere in the workspace and copy to results folder
+    - name: Collect all SARIF files
       run: |
         mkdir -p "$GITHUB_WORKSPACE/results"
-        find "$GITHUB_WORKSPACE/codeql-results" -name "*.sarif" -exec cp {} "$GITHUB_WORKSPACE/results/" \;
+        # Find all SARIF files in workspace
+        SARIF_FOUND=$(find "$GITHUB_WORKSPACE" -type f -name "*.sarif")
+        if [ -z "$SARIF_FOUND" ]; then
+          echo "No SARIF files found for ${{ matrix.language }}"
+        else
+          echo "$SARIF_FOUND" | xargs -I {} cp {} "$GITHUB_WORKSPACE/results/"
+          echo "Copied SARIF files to results folder."
+        fi
 
-    # 6️⃣ Upload SARIF artifacts for download
+    # 6️⃣ Upload all collected SARIF files as downloadable artifacts
     - name: Upload SARIF artifacts
+      if: success() && steps.collect_sarif.outcome != 'failure'
       uses: actions/upload-artifact@v4
       with:
         name: codeql-sarif-results-${{ matrix.language }}
