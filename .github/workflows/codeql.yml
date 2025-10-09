@@ -1,4 +1,4 @@
-name: CodeQL Analysis + Excel Report
+name: CodeQL Analysis + CSV Export
 
 on:
   workflow_dispatch:
@@ -18,12 +18,12 @@ jobs:
       matrix:
         include:
           - language: csharp
-            build-mode: msbuild   # needed for compiled languages
+            build-mode: none       # required for compiled languages
           - language: javascript-typescript
-            build-mode: none      # okay for interpreted languages
+            build-mode: none          # okay for interpreted languages
 
     steps:
-    # -------------------- Checkout repo --------------------
+    # -------------------- Checkout repository --------------------
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -38,7 +38,7 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        echo "Manual build mode. Build your project here."
+        echo "Manual build mode. Please build your code here."
         exit 1
 
     # -------------------- Run CodeQL Analysis --------------------
@@ -47,10 +47,15 @@ jobs:
       with:
         category: "/language:${{ matrix.language }}"
 
-    # -------------------- Collect SARIF files --------------------
-    - name: Collect SARIF files dynamically
+    # -------------------- Prepare folders --------------------
+    - name: Prepare folders
       run: |
         mkdir -p ./results_sarif
+        mkdir -p ./results_csv
+
+    # -------------------- Collect SARIF files dynamically --------------------
+    - name: Collect SARIF files
+      run: |
         SARIF_FILES=$(find "$GITHUB_WORKSPACE" -type f -name "${{ matrix.language }}*.sarif")
         if [ -z "$SARIF_FILES" ]; then
           echo "No SARIF files found for ${{ matrix.language }}"
@@ -66,47 +71,17 @@ jobs:
         name: sarif-files-${{ matrix.language }}
         path: ./results_sarif/
 
-    # -------------------- Setup Python --------------------
-    - name: Setup Python
-      uses: actions/setup-python@v4
+    # -------------------- Convert SARIF to CSV --------------------
+    - name: Convert SARIF to CSV
+      uses: mr-sherman/sarif-to-csv@v2.1
       with:
-        python-version: '3.x'
+        # Dynamically process SARIF files for this language
+        input-file: "./results_sarif/${{ matrix.language }}*.sarif"
+        output-file: "./results_csv/${{ matrix.language }}.csv"
 
-    - name: Install Python packages
-      run: |
-        pip install pandas openpyxl
-
-    # -------------------- Convert SARIF to Excel --------------------
-    - name: Convert SARIF to Excel
-      run: |
-        mkdir -p ./results_excel
-        for SARIF_FILE in ./results_sarif/*.sarif; do
-          if [[ -f "$SARIF_FILE" ]]; then
-            python3 - << EOF
-import json, pandas as pd, os
-sarif_file = "$SARIF_FILE"
-base = os.path.basename(sarif_file).replace('.sarif', '')
-with open(sarif_file) as f:
-    data = json.load(f)
-rows = []
-for run in data.get("runs", []):
-    for result in run.get("results", []):
-        ruleId = result.get("ruleId")
-        level = result.get("level")
-        message = result.get("message", {}).get("text")
-        for loc in result.get("locations", []):
-            file = loc["physicalLocation"]["artifactLocation"]["uri"]
-            line = loc["physicalLocation"]["region"]["startLine"]
-            rows.append([file, line, level, ruleId, message])
-df = pd.DataFrame(rows, columns=["file", "line", "level", "ruleId", "message"])
-df.to_excel(f"./results_excel/{base}.xlsx", index=False)
-EOF
-          fi
-        done
-
-    # -------------------- Upload Excel artifacts --------------------
-    - name: Upload Excel artifacts
+    # -------------------- Upload CSV artifacts --------------------
+    - name: Upload CSV artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: excel-files-${{ matrix.language }}
-        path: ./results_excel/
+        name: csv-files-${{ matrix.language }}
+        path: ./results_csv/${{ matrix.language }}.csv
