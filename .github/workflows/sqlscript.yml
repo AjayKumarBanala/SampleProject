@@ -1,10 +1,6 @@
 name: SQL Scripts
-
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+on
+ workflow_dispatch:
 
 jobs:
   copy-scripts:
