@@ -24,31 +24,42 @@ jobs:
             build-mode: none
 
     steps:
+    # 1️⃣ Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # 2️⃣ Initialize CodeQL
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # Optional custom queries:
+        # Optional: add custom queries
         # queries: security-extended,security-and-quality
 
-    # Only needed if build-mode is manual
+    # 3️⃣ Only needed if build-mode is manual
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
         echo "Manual build mode set. Please build your code here."
         exit 1
 
+    # 4️⃣ Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{ matrix.language }}"
+        # This will automatically upload SARIF to GitHub Security tab
 
-    # Upload all SARIF files automatically
-    - name: Upload CodeQL SARIF results
-      uses: github/codeql-action/upload-sarif@v3
+    # 5️⃣ Copy SARIF files to results folder
+    - name: Copy SARIF files to results folder
+      run: |
+        mkdir -p "$GITHUB_WORKSPACE/results"
+        find "$GITHUB_WORKSPACE/codeql-results" -name "*.sarif" -exec cp {} "$GITHUB_WORKSPACE/results/" \;
 
-
+    # 6️⃣ Upload SARIF artifacts for download
+    - name: Upload SARIF artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: codeql-sarif-results-${{ matrix.language }}
+        path: ${{ github.workspace }}/results/
