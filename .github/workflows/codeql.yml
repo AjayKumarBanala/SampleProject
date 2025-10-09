@@ -18,7 +18,7 @@ jobs:
       matrix:
         include:
           - language: csharp
-            build-mode: msbuild       # <-- build mode needed for compiled code
+            build-mode: none       # <-- build mode needed for compiled code
           - language: javascript-typescript
             build-mode: none          # okay for interpreted languages
 
@@ -75,3 +75,4 @@ jobs:
       with:
         name: csv-files-${{ matrix.language }}
         path: ./results_csv/
+
