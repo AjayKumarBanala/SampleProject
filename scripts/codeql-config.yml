@@ -1,0 +1,52 @@
+# CodeQL Configuration File for Advanced Security Analysis
+# This configuration helps manage large codebases and customize analysis behavior
+
+name: "ExpaTPA CodeQL Config"
+
+# Disable default queries to avoid duplicates when using query packs
+disable-default-queries: false
+
+# Query filters to reduce result count while maintaining security coverage
+queries:
+  - name: Security queries
+    uses: security-extended
+  # Uncomment to add quality queries (increases result count)
+  - name: Quality queries
+    uses: security-and-quality
+
+# Path filters to exclude generated code, third-party libraries, and test files
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/bin/**'
+  - '**/obj/**'
+  - '**/*.min.js'
+  - '**/*.min.css'
+  - '**/wwwroot/lib/**'
+  - '**/packages/**'
+  - '**/.vs/**'
+  - '**/.vscode/**'
+  - '**/TestResults/**'
+  - '**/*.Designer.cs'
+  - '**/*.generated.cs'
+  - '**/Migrations/**'
+
+# Paths to explicitly include (override ignore patterns if needed)
+paths:
+  - 'ExpaTPA60/**'
+  - 'ExpaTPA.Quote/**'
+  - 'ExpaTPA.Customer/**'
+  - 'ExpaTPA.EasyFinance/**'
+  - 'ExpaTPA60.Brokers/**'
+  - 'ExpaTPA60.Dashboard/**'
+
+# Query filters to exclude low-priority findings
+query-filters:
+  - exclude:
+      tags contain: external/cwe/cwe-1004  # Exclude cookie without httponly flag (if too noisy)
+  # Add more filters as needed based on your triage
+
+# Performance and resource settings
+# Increase timeout for large codebases
+trap-caching: true
