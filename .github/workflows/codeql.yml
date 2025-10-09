@@ -18,57 +18,47 @@ jobs:
       matrix:
         include:
           - language: csharp
-            build-mode: none       # required for compiled languages
+            build-mode: none
           - language: javascript-typescript
-            build-mode: none          # okay for interpreted languages
+            build-mode: none
 
     steps:
-    # -------------------- Checkout repository --------------------
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # -------------------- Initialize CodeQL --------------------
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
 
-    # -------------------- Manual build mode placeholder --------------------
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
         echo "Manual build mode. Please build your code here."
         exit 1
 
-    # -------------------- Run CodeQL Analysis --------------------
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{ matrix.language }}"
 
-    # -------------------- Prepare folders --------------------
-    - name: Prepare folders
-      run: |
-        mkdir -p ./results_sarif
-        mkdir -p ./results_csv
+    - name: Prepare results folder
+      run: mkdir -p ./results
 
     - name: Process SARIF Files
       run: |
-        mkdir -p ./results
         # Dynamically find SARIF files under the _work folder
-        SARIF_FILE=$(find "$RUNNER_WORKSPACE" -type f -name "${{ matrix.language }}*.sarif" | head -n 1)
+        SARIF_FILE=$(find "$RUNNER_WORKSPACE" -type f -name "*.sarif" | head -n 1)
         if [[ -f "$SARIF_FILE" ]]; then
-          cp "$SARIF_FILE" ./results/
-          echo "Copied $(basename $SARIF_FILE) to ./results/"
+          # Rename to matrix.language.sarif for consistent naming
+          cp "$SARIF_FILE" "./results/${{ matrix.language }}.sarif"
+          echo "Copied $(basename $SARIF_FILE) as ${{ matrix.language }}.sarif"
         else
-          echo "No SARIF file found for ${{ matrix.language }}, skipping."
+          echo "No SARIF file found, skipping."
         fi
       env:
         RUNNER_WORKSPACE: ${{ github.workspace }}
-
-
-
 
     - name: Upload SARIF artifacts
       uses: actions/upload-artifact@v4
@@ -76,19 +66,16 @@ jobs:
         name: sarif-files-${{ matrix.language }}
         path: ./results/
 
-
     # -------------------- Convert SARIF to CSV --------------------
     - name: Convert SARIF to CSV
       uses: mr-sherman/sarif-to-csv@v2.1
       with:
-        # Dynamically process SARIF files for this language
-        input-file: "./results/${{ matrix.language }}*.sarif"
+        # Now the filename is consistent
+        input-file: "./results/${{ matrix.language }}.sarif"
         output-file: "./results/${{ matrix.language }}.csv"
 
-    # -------------------- Upload CSV artifacts --------------------
     - name: Upload CSV artifacts
       uses: actions/upload-artifact@v4
       with:
         name: csv-files-${{ matrix.language }}
         path: ./results/${{ matrix.language }}.csv
-
