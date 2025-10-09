@@ -50,5 +50,5 @@ jobs:
     # Upload all SARIF files automatically
     - name: Upload CodeQL SARIF results
       uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: ${{ github.workspace }}/codeql-results/**/*.sarif
+
+
