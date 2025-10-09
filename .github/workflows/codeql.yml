@@ -62,17 +62,6 @@ jobs:
         name: sarif-files-${{ matrix.language }}
         path: ./results/
 
-    - name: Convert SARIF to CSV
-      run: |
-        mkdir -p "$GITHUB_WORKSPACE/results_csv"
-        for f in ./results/*.sarif; do
-          base=$(basename "$f" .sarif)
-          npx sarif-to-csv "$f" "$GITHUB_WORKSPACE/results_csv/$base.csv"
-        done
 
-    - name: Upload CSV Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: csv-files-${{ matrix.language }}
-        path: ./results_csv/
+
 
